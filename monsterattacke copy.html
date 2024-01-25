@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Zeichnen auf der Canvas</title>
+	<style>
+		body,
+		html {
+			padding: 0;
+			margin: 0;
+		}
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+	<canvas id="myCanvas" width="700" height="350"></canvas>
+	<script src="dauvas.js"></script>
+
+	<script>
+		var balfade = 0;
+
+		function blendColors(r1, g1, b1, r2, g2, b2, balance) {
+			var bal = Math.min(Math.max(balance, 0), 1);
+			var nbal = 1 - bal;
+			return {
+				r: Math.floor(r1 * nbal + r2 * bal),
+				g: Math.floor(g1 * nbal + g2 * bal),
+				b: Math.floor(b1 * nbal + b2 * bal)
+			};
+		}
+
+		function monster(x, y, a) {
+			fillCircle(x, y, a);
+			for (var w = 0; w < 180; w = w + 30)
+				fillRectCenterRotate(x, y, 3 * a, 0.15 * a, w);
+			//Augen
+			setFillColor("white");
+			fillOval(x + 0.3 * a, y - 0.5 * a, 0.1 * a, 0.2 * a);
+			fillOval(x - 0.3 * a, y - 0.5 * a, 0.1 * a, 0.2 * a);
+			setFillColor("black");
+			fillOval(x + 0.3 * a, y - 0.4 * a, 0.04 * a, 0.06 * a);
+			fillOval(x - 0.3 * a, y - 0.4 * a, 0.04 * a, 0.06 * a);
+			//Mund
+			fillOval(x, y + 0.3 * a, 0.5 * a, 0.2 * a);
+
+		}
+		//setTimeout(monster, 5000, xmax/2, ymax/2, 50);
+
+		/*let x = 500;
+		function step() {
+			monster(x, 500, 50);
+			x += 30;
+		}
+		setInterval(step, 50);
+		*/
+
+		function runAnim1() {
+			let x = 500;
+			let y = 500;
+			let i = 0;
+			animation = setInterval(monsterStep1, 100);
+			function monsterStep1() {
+				if (i == 10) {
+					clearInterval(animation);
+				}
+				i += 1
+				monster(x, y, 50);
+				x += 30
+			}
+		}
+
+		//runAnim1();
+
+		function runAnim2() {
+			let x = 500, y = 500, vx = 3, vy = 2, dt = 5;
+			animation = setInterval(monsterStep2, 100);
+			function monsterStep2() {
+				var bc = blendColors(0, 0, 255, 255, 255, 0, balfade);
+				setFillColorRGB(bc.r, bc.g, bc.b);
+				clearScreen();
+				monster(x, y, 50);
+				x += vx * dt;
+				y += vy * dt;
+				if (x > xmax || x < 0) {
+					vx = -vx;
+				}
+				if (y > ymax || y < 0) {
+					vy = -vy;
+				}
+				if (balfade < 1) {
+					balfade += 0.02;
+				}
+			}
+
+		}
+
+		runAnim2();
+
+
+
+
+
+	</script>
+
+
+</body>
+
+</html>
